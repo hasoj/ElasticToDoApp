@@ -1,0 +1,41 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ToDoList</title>
+  <style>
+    body      { padding: 30px; font-family: sans-serif; }
+    div.table { display: table; }
+    form.tr   { display: table-row; }
+    span.td   { display: table-cell; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h2>Showing all items</h2>
+  <form action="/doaddnewitem" method="post">
+    <input name="itemtoadd" type="text" size="40" placeholder="What needs to be done?">
+    <button type="submit">Add</button>  
+  </form>
+  <div class="table">
+    <% @allitems.each do |item| %>
+    <form action="/withitem/<%= item['id'] %>" method="post" class="tr">
+      <span class="td"><%= item['done'] ? "☑" : "☐" %></span>
+      <span class="td"><%= item['description'] %></span>
+      <span class="td">
+        <a href="/showeditformfor/<%= item['id'] %>">Edit</a>
+      </span>
+      <span class="td">
+        <button type="submit" name="buttontotoggledone"><%= item['done'] ? "Mark as Active" : "Mark as Done" %></button>
+      </span>
+    </form>
+    <% end %>
+  </div>
+  <br>
+  <form action="/buttonsatbottom" method="post">
+    <button type="submit" name="buttontoshowall">Show All</button>
+    <button type="submit" name="buttontoshowactive">Show Active</button>
+    <button type="submit" name="buttontoshowcompleted">Show Completed</button>
+    <button type="submit" name="buttontoclearcompleted">Clear Completed</button>
+  </form>
+</body>
+</html>
+
