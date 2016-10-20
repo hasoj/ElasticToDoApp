@@ -8,20 +8,18 @@ Bundler.require(*Rails.groups)
 
 module Todoapp
   class Application < Rails::Application
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    config.repository = Elasticsearch::Persistence::Repository.new do
+      client Elasticsearch::Client.new url: 'http://localhost:9200', log: true
+      index :mynotesindex
+      type  :note
+    end
 
-    # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
-    # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
-    # config.time_zone = 'Central Time (US & Canada)'
+    config.repository.create_index! force: true
 
-    # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
-    # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
-    # config.i18n.default_locale = :de
-
-    # Do not swallow errors in after_commit/after_rollback callbacks.
-    config.active_record.raise_in_transactional_callbacks = true
+    config.repository.save( { id: 1, done: false , description: 'Buy milk'     } )
+    config.repository.save( { id: 2, done: true  , description: 'Learn Rails'  } )
+    config.repository.save( { id: 3, done: false , description: 'Do homework'  } )
+    config.repository.save( { id: 4, done: true  , description: 'Pack luggage' } )
   end
 end
 
@@ -36,18 +34,4 @@ class Note
     @attributes
   end
 end
-
-
-repository = Elasticsearch::Persistence::Repository.new do
-  client Elasticsearch::Client.new url: 'http://localhost:9200', log: true
-  index :mynotesindex
-  type  :note
-end
-
-repository.create_index! force: true
-
-repository.save( { id: 1, done: false , description: 'Buy milk'     } )
-repository.save( { id: 2, done: true  , description: 'Learn Rails'  } )
-repository.save( { id: 3, done: false , description: 'Do homework'  } )
-repository.save( { id: 4, done: true  , description: 'Pack luggage' } )
 
