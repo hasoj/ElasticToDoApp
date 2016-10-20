@@ -1,2 +1,1 @@
-# ElasticToDoApp
 ElasticToDoApp
